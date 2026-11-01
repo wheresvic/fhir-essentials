@@ -2526,7 +2526,7 @@ GET [base]/Observation?patient=123
       <ul>
         <li><code>status</code>: <code>registered</code>, <code>preliminary</code>, <code>final</code>, <code>amended</code> (and <code>corrected</code>), <code>cancelled</code>, <code>entered-in-error</code>, <code>unknown</code>. For <code>cancelled</code>, give the reason in <code>dataAbsentReason</code>.</li>
         <li>Vital signs "SHALL conform" to the vital signs profile: a status, category <code>vital-signs</code>, the LOINC code, a patient, a time precise to the day, and a value in UCUM units or a reason why not.</li>
-        <li>Codes: heart rate <code>8867-4</code> and respiratory rate <code>9279-1</code> in <code>/min</code>, SpO2 <code>2708-6</code> <code>%</code>, temperature <code>8310-5</code> <code>Cel</code>, height <code>8302-2</code> <code>cm</code>, weight <code>29463-7</code> <code>kg</code>, BMI <code>39156-5</code> <code>kg/m2</code>, blood pressure <code>85354-9</code> with <code>8480-6</code> and <code>8462-4</code> in <code>mm[Hg]</code>.</li>
+        <li>Codes and units: <code>8867-4</code> Heart rate and <code>9279-1</code> Respiratory rate in <code>/min</code>; <code>2708-6</code> Oxygen saturation in Arterial blood in <code>%</code>; <code>8310-5</code> Body temperature in <code>Cel</code>; <code>8302-2</code> Body height in <code>cm</code>; <code>29463-7</code> Body weight in <code>kg</code>; <code>39156-5</code> Body mass index (BMI) [Ratio] in <code>kg/m2</code>; <code>85354-9</code> Blood pressure panel with all children optional, with <code>8480-6</code> Systolic blood pressure and <code>8462-4</code> Diastolic blood pressure in <code>mm[Hg]</code>.</li>
         <li><code>unit</code> is for display; <code>system</code> and <code>code</code> carry the UCUM unit: <code>mmHg</code> vs <code>mm[Hg]</code>.</li>
       </ul>
       <ul>
@@ -3111,7 +3111,7 @@ POST [base]/AppointmentResponse
     { "fullUrl": "urn:uuid:5a1f0d1e-6f0a-4c7e-9a52-1d2b3c4d5e01",
       "resource": { "resourceType": "Composition", "status": "final",
         "type": { "coding": [ { "system": "http://loinc.org", "code": "11488-4",
-                                "display": "Consult note" } ] },
+                                "display": "Consult Note" } ] },
         "subject": { "reference": "urn:uuid:5a1f0d1e-6f0a-4c7e-9a52-1d2b3c4d5e02" },
         "date": "2026-11-01T10:00:00+01:00",
         "author": [ { "reference": "urn:uuid:5a1f0d1e-6f0a-4c7e-9a52-1d2b3c4d5e03" } ],
@@ -3136,7 +3136,7 @@ POST [base]/AppointmentResponse
         <li><code>meta.profile</code> on the Bundle names the profile the document claims.</li>
       </ul>
     </div>
-    <p class="note">Values made up. LOINC 11488-4 is "Consult note".</p>
+    <p class="note">Values made up. LOINC 11488-4 is "Consult Note".</p>
   </section>
 
   <section>
@@ -3227,7 +3227,7 @@ POST [base]/DocumentReference
   "type": { "coding": [ {
     "system": "http://loinc.org",
     "code": "11488-4",
-    "display": "Consult note" } ] },
+    "display": "Consult Note" } ] },
   "subject": { "reference": "Patient/123" },
   "date": "2026-11-01T10:20:00+01:00",
   "author": [ { "reference": "Practitioner/456" } ],
