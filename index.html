@@ -2240,7 +2240,7 @@ dependencies:
   <div class="idstrip">
     <div class="idbox good">
       <h3>Practitioner is the person, PractitionerRole the job</h3>
-      <p>A Practitioner has no organisation and no role. As what, for whom, where and when someone works sits in a PractitionerRole: one for each combination that differs.</p>
+      <p>A Practitioner has no organisation and no role. What someone works as, for whom, where and when goes in a PractitionerRole: one for each combination that differs.</p>
     </div>
     <div class="idbox warn">
       <h3>Organization is conceptual, Location physical</h3>
@@ -2268,7 +2268,7 @@ dependencies:
     <div class="two">
       <ul>
         <li><strong>Practitioner</strong> holds what stays the same in every job: identifiers (GLN and ZSR in CH Core, see Profiles), name, gender, birth date, languages, and telecom and address "that apply to all roles" or are "typically home address".</li>
-        <li><code>qualification</code>: degrees and licences, acquired "independent of any organization or role". They don't allow anyone to work anywhere.</li>
+        <li><code>qualification</code>: degrees and licences, acquired "independent of any organization or role". On their own they don't let anyone work anywhere.</li>
         <li>The organisation in a role "need not necessarily be the (direct) employer".</li>
       </ul>
       <ul>
@@ -2547,7 +2547,7 @@ GET [base]/Observation?patient=123
         <li><code>statusReason</code> says why it was not done or stopped; why it was done at all goes in <code>reasonCode</code>.</li>
       </ul>
       <ul>
-        <li><code>performed[x]</code>: a dateTime, Period, string, Age or Range, so a patient's own account, such as appendix removed as a child, fits.</li>
+        <li><code>performed[x]</code>: a dateTime, Period, string, Age or Range, so a patient's own vague account fits, such as an appendix removed in childhood.</li>
         <li><code>Encounter.diagnosis</code> may point at a Procedure as well as a Condition.</li>
       </ul>
     </div>
@@ -2682,7 +2682,7 @@ GET [base]/Observation?patient=123
       <tr><td>Every 2nd morning, 20 doses</td><td>1 per 2 <code>d</code>, <code>when</code> <code>MORN</code>, <code>count</code> 20</td></tr>
     </table>
     <ul>
-      <li>A <code>period</code> needs a <code>periodUnit</code> (UCUM: <code>s</code> to <code>a</code>), an <code>offset</code> a <code>when</code>; <code>timeOfDay</code> and <code>when</code> exclude each other. "Once per day at 2:00 and 4:00" still passes.</li>
+      <li>A <code>period</code> needs a <code>periodUnit</code> (UCUM, <code>s</code> to <code>a</code>), and an <code>offset</code> needs a <code>when</code>; <code>timeOfDay</code> and <code>when</code> exclude each other. The rules don't catch everything: "Once per day at 2:00 and 4:00" passes.</li>
     </ul>
   </section>
 
@@ -2815,7 +2815,7 @@ GET [base]/Observation?patient=123
 <pre>{ "resourceType": "ServiceRequest",
   "status": "active", "intent": "original-order",
   "requisition": {
-    "system": "http://example.org/sid/order-nr",
+    "system": "https://example.org/sid/order-nr",
     "value": "A-2026-4711" },
   "code": { "coding": [ {
       "system": "http://loinc.org",
@@ -2859,7 +2859,7 @@ later, by the lab:
         <table>
           <tr><td><code>draft</code>, <code>requested</code></td><td>Not ready; ready and action sought</td></tr>
           <tr><td><code>received</code>, <code>accepted</code>, <code>rejected</code></td><td>Claimed and being weighed; agreed, not started; declined</td></tr>
-          <tr><td><code>ready</code></td><td>Instead of those, when assignment is a given</td></tr>
+          <tr><td><code>ready</code></td><td>Instead of those, when assignment and acceptance are a given</td></tr>
           <tr><td><code>in-progress</code>, <code>on-hold</code></td><td>Started; paused</td></tr>
           <tr><td><code>completed</code>, <code>failed</code>, <code>cancelled</code></td><td>Done; an error stopped it; "external forces" stopped it</td></tr>
         </table>
@@ -2976,7 +2976,7 @@ GET [base]/Slot?schedule=Schedule/sch-1&amp;status=free&amp;start=ge2026-11-09&a
     <h2><span class="n">3</span>Statuses and invariants</h2>
     <div class="two">
       <table>
-        <tr><td><code>proposed</code>, <code>pending</code></td><td>Nobody has finalized yet; some haven't</td></tr>
+        <tr><td><code>proposed</code>, <code>pending</code></td><td>No participant has confirmed yet; not all have</td></tr>
         <tr><td><code>booked</code></td><td>"confirmed to go ahead"</td></tr>
         <tr><td><code>arrived</code>, <code>checked-in</code></td><td>Waiting; admin work done</td></tr>
         <tr><td><code>fulfilled</code></td><td>Planning complete, the Encounter takes over</td></tr>
@@ -3204,7 +3204,7 @@ POST [base]/AppointmentResponse
       <tr><td><code>POST [base]/Bundle</code></td><td>Stores the whole document, unprocessed. 201 with a new <code>Bundle.id</code>; "the Bundle.identifier will not" change. Find it with <code>GET [base]/Bundle?identifier=urn:ietf:rfc:3986|urn:uuid:0c3151bd-...</code>, or by its Composition with the <code>composition</code> parameter.</td></tr>
       <tr><td><code>POST [base]/Binary</code></td><td>"Just store the entire document as a sequence of bytes". Nothing in <code>/Binary</code> is searchable, so a DocumentReference usually indexes it.</td></tr>
       <tr><td><code>POST [base]</code></td><td>As a transaction: the server processes "all of the resources that it contains as individual resources". Don't expect it to "reassemble the document exactly": "a document signature will very likely be invalid".</td></tr>
-      <tr><td><code>Composition/[id]/$document</code></td><td>The server assembles a document from a stored Composition, or returns an error; <code>?persist=true</code> also stores it at <code>/Bundle</code> and SHOULD give its <code>Location</code>. The text says the result comes wrapped in a search Bundle, the spec's example shows a bare document: check your server.</td></tr>
+      <tr><td><code>Composition/[id]/$document</code></td><td>The server assembles a document from a stored Composition, or returns an error; <code>?persist=true</code> also stores it at <code>/Bundle</code> and SHOULD give its <code>Location</code>. The text says the result comes wrapped in a search Bundle; the spec's example shows a bare document. Check your server.</td></tr>
     </table>
   </section>
 
