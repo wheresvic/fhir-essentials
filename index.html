@@ -14,8 +14,8 @@
 
   @page {
     size: A4; margin: 7mm 8mm;
-    @bottom-left { content: "FHIR\00AE  essentials \00B7  CC BY 4.0 \00B7  Victor Parmar"; font: 6pt "Lato", sans-serif; color: #8a93a0; }
-    @bottom-right { content: counter(page) " / " counter(pages); font: 6pt "Lato", sans-serif; color: #8a93a0; }
+    @bottom-left { content: "FHIR\00AE  essentials \00B7  CC BY 4.0 \00B7  Victor Parmar"; font: 6pt "Lato", sans-serif; color: #5a6474; }
+    @bottom-right { content: counter(page) " / " counter(pages); font: 6pt "Lato", sans-serif; color: #5a6474; }
   }
 
   :root {
@@ -33,20 +33,29 @@
     --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   }
 
+  /* Font sizes are in rem: 1rem is 9.8pt on paper and 15px on screen, so the screen
+     shows the printed sheet scaled up and follows the reader's browser font size. */
   * { box-sizing: border-box; }
-  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html { font-size: 9.8pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body {
     margin: 0;
     background: #ffffff;
     color: var(--ink);
-    font: 9.8pt/1.38 "Lato", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font: 1rem/1.38 "Lato", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   }
   .page { max-width: 194mm; margin: 0 auto; }
 
   @media screen {
+    html { font-size: 93.75%; }
     body { background: #e9edf2; padding: 24px 16px; }
-    .lesson { background: #ffffff; padding: 12mm 13mm; box-shadow: 0 2px 14px rgba(20, 30, 50, 0.12); border-radius: 4px; }
+    /* 57.5rem of text, a little more than the printed 56.1rem so print-width code fits, plus the card's padding */
+    .page { max-width: 65rem; }
+    .lesson { background: #ffffff; padding: 3rem 3.75rem; box-shadow: 0 2px 14px rgba(20, 30, 50, 0.12); border-radius: 4px; scroll-margin-top: 16px; }
     .lesson + .lesson { margin-top: 24px; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+    .route .title a:hover { text-decoration: underline; }
+    footer a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 2px; }
+    footer a:hover { text-decoration-color: currentColor; }
   }
   @media print {
     .lesson + .lesson { break-before: page; }
@@ -56,18 +65,19 @@
   }
 
   header { border-bottom: 2px solid var(--accent); padding-bottom: 6px; margin-bottom: 10px; }
-  .kicker { font-size: 7.8pt; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
-  h1 { font-family: var(--serif); font-weight: 600; font-size: 19pt; line-height: 1.15; margin: 2px 0 3px; letter-spacing: -0.005em; }
-  .lede { margin: 0; color: var(--muted); font-size: 9.6pt; }
+  .kicker { font-size: 0.796rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 1.939rem; line-height: 1.15; margin: 2px 0 3px; letter-spacing: -0.005em; }
+  .lede { margin: 0; color: var(--muted); font-size: 0.98rem; }
 
+  /* The number circle hangs in the indent, so a long heading wraps under its text */
   h2 {
-    font-size: 11pt; margin: 0 0 5px; color: var(--accent);
-    display: flex; align-items: baseline; gap: 7px;
+    font-size: 1.122rem; margin: 0 0 5px; color: var(--accent);
+    padding-left: 1.84rem; text-indent: -1.84rem;
   }
   h2 .n {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 17px; height: 17px; border-radius: 50%;
-    background: var(--accent); color: #fff; font-size: 8.5pt; flex: none;
+    width: 1.3rem; height: 1.3rem; margin-right: 0.54rem; border-radius: 50%;
+    background: var(--accent); color: #fff; font-size: 0.867rem; text-indent: 0;
     position: relative; top: -1px;
   }
   section { margin-bottom: 10px; }
@@ -75,18 +85,21 @@
   ul { margin: 0 0 5px; padding-left: 15px; }
   li { margin: 1px 0; }
   code, pre { font-variant-ligatures: none; }
-  code { font-family: var(--mono); font-size: 0.9em; background: var(--code-bg); padding: 0 3px; border-radius: 3px; }
+  code {
+    font-family: var(--mono); font-size: 0.9em; background: var(--code-bg); padding: 0 1px; border-radius: 3px;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
   pre {
-    font-family: var(--mono); font-size: 7.9pt; line-height: 1.45;
+    font-family: var(--mono); font-size: 0.806rem; line-height: 1.45;
     background: var(--code-bg); border: 1px solid var(--rule); border-radius: 4px;
     padding: 6px 8px; margin: 4px 0; white-space: pre; overflow-x: auto;
   }
-  .note { font-size: 8pt; color: var(--muted); margin: 0; }
+  .note { font-size: 0.816rem; color: var(--muted); margin: 0; }
 
   .idstrip { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
   .idbox { border: 1px solid var(--rule); border-radius: 5px; padding: 6px 9px; }
-  .idbox h3 { margin: 0 0 2px; font-size: 9.8pt; }
-  .idbox h3 code { background: none; padding: 0; font-size: 10pt; }
+  .idbox h3 { margin: 0 0 2px; font-size: 1rem; }
+  .idbox h3 code { background: none; padding: 0; font-size: 1.02rem; }
   .idbox p { margin: 0; }
   .idbox.good { border-color: var(--accent); background: var(--accent-soft); }
   .idbox.warn { border-color: var(--warm); background: var(--warm-soft); }
@@ -97,13 +110,13 @@
   .two.wide-left { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); }
   .who { border-left: 3px solid var(--rule); padding: 1px 0 1px 8px; margin: 2px 0 5px; }
   .who div { margin: 1px 0; }
-  .who strong { display: inline-block; width: 92px; font-size: 7.8pt; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .who strong { display: inline-block; width: 7.04rem; font-size: 0.796rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
 
-  table { border-collapse: collapse; width: 100%; font-size: 9.3pt; margin: 3px 0 4px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.949rem; margin: 3px 0 4px; }
   td { padding: 3px 6px 3px 0; vertical-align: top; border-top: 1px solid var(--rule); }
   tr:first-child td { border-top: none; }
-  td:first-child { white-space: nowrap; font-weight: 600; padding-right: 10px; }
-  td code { font-weight: 600; }
+  td:first-child { white-space: nowrap; font-weight: 700; padding-right: 10px; }
+  td:first-child code { font-weight: 600; }
 
   .callout {
     background: var(--warm-soft); border: 1px solid #ecd3ac; border-left: 4px solid var(--warm);
@@ -121,24 +134,24 @@
   .breaks h2 .n { background: var(--alert); }
   .breaks ul { margin-bottom: 0; }
 
-  footer { margin-top: 8px; padding-top: 5px; border-top: 1px solid var(--rule); font-size: 7.4pt; color: var(--muted); }
+  footer { margin-top: 8px; padding-top: 5px; border-top: 1px solid var(--rule); font-size: 0.755rem; color: var(--muted); }
   footer a { color: var(--muted); text-decoration: none; }
 
   .route { list-style: none; padding: 0; margin: 6px 0 0; }
-  .route li { display: grid; grid-template-columns: 24px 47mm minmax(0, 1fr) 17mm; gap: 1px 8px; align-items: baseline; padding: 4px 0; border-top: 1px solid var(--rule); margin: 0; }
+  .route li { display: grid; grid-template-columns: 1.837rem 13.6rem minmax(0, 1fr) 4.917rem; gap: 1px 8px; align-items: baseline; padding: 4px 0; border-top: 1px solid var(--rule); margin: 0; }
   .route .num {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 19px; height: 19px; border-radius: 50%;
-    background: var(--accent); color: #fff; font-weight: 700; font-size: 8.5pt;
+    width: 1.454rem; height: 1.454rem; border-radius: 50%;
+    background: var(--accent); color: #fff; font-weight: 700; font-size: 0.867rem;
   }
-  .route .title { font-family: var(--serif); font-weight: 600; font-size: 10.5pt; line-height: 1.2; }
+  .route .title { font-family: var(--serif); font-weight: 600; font-size: 1.071rem; line-height: 1.2; }
   .route .title a { color: var(--ink); text-decoration: none; }
-  .route .what { color: var(--muted); font-size: 8.8pt; line-height: 1.3; }
-  .route .when { font-size: 7.8pt; color: var(--muted); white-space: nowrap; text-align: right; }
-  .route .stage { grid-column: 1 / -1; font-size: 7.8pt; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); font-weight: 700; padding-top: 7px; }
+  .route .what { color: var(--muted); font-size: 0.898rem; line-height: 1.3; }
+  .route .when { font-size: 0.796rem; color: var(--muted); white-space: nowrap; text-align: right; }
+  .route .stage { grid-column: 1 / -1; font-size: 0.796rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); font-weight: 700; padding-top: 7px; }
   .route li.stage-row { border-top: none; padding-bottom: 1px; }
-  .legend { font-size: 8pt; color: var(--muted); margin: 6px 0 0; }
-  .notices { margin-top: 8px; padding-top: 5px; border-top: 1px solid var(--rule); font-size: 6.8pt; line-height: 1.3; color: var(--muted); }
+  .legend { font-size: 0.816rem; color: var(--muted); margin: 6px 0 0; }
+  .notices { margin-top: 8px; padding-top: 5px; border-top: 1px solid var(--rule); font-size: 0.694rem; line-height: 1.3; color: var(--muted); }
   .notices p { margin: 0 0 2px; }
   .notices a { color: var(--muted); }
   .route li.planned .num { background: var(--rule); color: var(--muted); }
@@ -148,6 +161,13 @@
     .idstrip, .two, .two.wide-left { grid-template-columns: 1fr; }
     .who strong { display: block; width: auto; }
     .lesson { padding: 16px; }
+    /* Itinerary: number, title and date on the first row, the description below */
+    .route li { grid-template-columns: 1.837rem minmax(0, 1fr) auto; }
+    .route .title { grid-column: 2; grid-row: 1; }
+    .route .when { grid-column: 3; grid-row: 1; }
+    .route .what { grid-column: 2 / -1; grid-row: 2; }
+    td:first-child { white-space: normal; }
+    td, code { overflow-wrap: anywhere; }
   }
 </style>
 </head>
