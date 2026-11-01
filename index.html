@@ -3719,7 +3719,7 @@ GET [base]/Observation?_security=http://terminology.hl7.org/CodeSystem/v3-Confid
   </section>
 
   <section>
-    <h2><span class="n">2</span>Who is the patient: three numbers</h2>
+    <h2><span class="n">2</span>Who is the patient: four numbers</h2>
     <table>
       <tr><td>Local id</td><td>Your system's patient number, type <code>MR</code>, under your own OID, such as <code>urn:oid:2.999.1.2.3.4|8734</code>.</td></tr>
       <tr><td>MPI-PID</td><td>The community's master patient index id. Each community has its own assigning authority; there is no national one.</td></tr>
@@ -3729,7 +3729,7 @@ GET [base]/Observation?_security=http://terminology.hl7.org/CodeSystem/v3-Confid
     <div class="two">
       <ul>
         <li>"Systems are not allowed to store the EPR-SPID, and need to feed their local identifier (localID) and EPR-SPID to the community to resolve the localID to the EPR-SPID later on." So: feed both to the community's PIXm (below), keep only your own number, and look the EPR-SPID up when you need it.</li>
-        <li>Typed in by hand, it may only be accepted after checking the check digit (EPDV Art. 7).</li>
+        <li>An EPR-SPID typed in by hand may only be accepted once its check digit has been checked (EPDV Art. 7).</li>
       </ul>
       <ul>
         <li>Check digit: weights 3, 1, 3, 1 ... from the right over the first 17 digits, then whatever brings the sum up to the next multiple of ten. <code>76133761041135365</code> sums to 120, so the IG's example <code>761337610411353650</code> ends in 0.</li>
@@ -3848,7 +3848,7 @@ Content-Type: application/fhir+json
       <ul>
         <li>Each hit has a <code>search.score</code> from 0 to 1 and a match grade: <code>certain</code>, <code>probable</code>, <code>possible</code>, <code>certainly-not</code>. Probable and possible want a human to review.</li>
         <li>"Patient identifiers other than the MPI-PID and EPR-SPID SHALL NOT be returned."</li>
-        <li>No search: CH replaced ITI-78 (<code>GET Patient?...</code>) with <code>$match</code> in 2024 (see Operations).</li>
+        <li>No search: CH replaced ITI-78 (<code>GET Patient?...</code>) with <code>$match</code> in 2024 (see Operations and PATCH).</li>
       </ul>
     </div>
   </section>
@@ -4186,7 +4186,7 @@ GET [base]/$versions
   ... }</pre>
     <div class="two">
       <ul>
-        <li>Every element of every version has an extension URL on that pattern: version <code>1.0</code>, <code>3.0</code>, <code>4.0</code>, <code>4.3</code> or <code>5.0</code>, and the path the element's id in that version.</li>
+        <li>Every element of every version has an extension URL on that pattern: version <code>1.0</code>, <code>3.0</code>, <code>4.0</code>, <code>4.3</code> or <code>5.0</code>, and the path is the element's id in that version.</li>
         <li>"Implementations should always use the correct element for data when one exists", and "It is always an error to use a cross version extension in the same version".</li>
         <li>A type new to an existing element goes in the later version's extension, such as <code>extension-Observation.value</code>. "The extension mechanism carries no information about cardinalities"; elements typed as a whole Resource are excluded.</li>
       </ul>
@@ -4286,7 +4286,7 @@ Content-Type: application/fhir+json
       <ul>
         <li>400 or 422? Failing the constraints in the CapabilityStatement "should be a 400", other business rules a 422. But "there's no expectation that servers will tightly adhere to this differentiation", and they "may also return 5xx errors in these cases without being deemed non-conformant". On a write, treat 400, 422 and 5xx alike: read the OperationOutcome.</li>
         <li>These are the FHIR-specific codes, "in addition to normal HTTP errors related to security, header and content type negotiation issues". Gateways and proxies add their own.</li>
-        <li>Not supported at all: conditional operations, batch and transaction "SHOULD return an HTTP 400"; no HEAD gives 405 or 501.</li>
+        <li>A server that doesn't support conditional operations, batch or transaction "SHOULD return an HTTP 400"; one without HEAD answers 405 or 501.</li>
       </ul>
     </div>
   </section>
@@ -4311,7 +4311,7 @@ Content-Type: application/fhir+json
   <section>
     <h2><span class="n">4</span>Silent failures: 200, and still wrong</h2>
     <table>
-      <tr><td>Unknown search parameter</td><td>Servers "SHOULD ignore unknown or unsupported parameters", so a typo widens the result. Compare the <code>self</code> link with what you sent, or send <code>Prefer: handling=strict</code> (honoured by choice).</td></tr>
+      <tr><td>Unknown search parameter</td><td>Servers "SHOULD ignore unknown or unsupported parameters", so a typo widens the result. Compare the <code>self</code> link with what you sent, or send <code>Prefer: handling=strict</code> (if the server honours it).</td></tr>
       <tr><td>Empty search parameter</td><td>"Empty parameters are not an error - they are just ignored": <code>Patient?identifier=</code> returns every patient.</td></tr>
       <tr><td>Unknown code or subject</td><td>Not an error: 200 with an empty Bundle, perhaps an OperationOutcome entry with mode <code>outcome</code>.</td></tr>
       <tr><td>Access denied</td><td>An empty Bundle is one of R4's ways to say no. Empty doesn't prove there's no data.</td></tr>
