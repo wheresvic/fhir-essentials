@@ -885,7 +885,7 @@
       <li><code>fullUrl</code> names the entry; a new resource gets a <code>urn:uuid:</code> and others point at it by that urn. On a POST the server assigns a real id and "SHALL also update any references to that resource in the same bundle".</li>
       <li><code>request</code> says what to do: <code>method</code>, <code>url</code>, and optional conditions such as <code>ifNoneExist</code> or <code>ifMatch</code>.</li>
     </ul>
-    <p class="note">Sent twice, this makes no second Patient but a second Observation: that entry needs a condition too (section 4). Values made up.</p>
+    <p class="note">Sent twice, this makes no second Patient but a second Observation: that entry needs a condition too (see Conditional operations). Values made up.</p>
   </section>
 
   <div class="two">
@@ -909,7 +909,7 @@
     <table>
       <tr><td>Conditional create</td><td><code>"ifNoneExist": "identifier=system|value"</code>: no match creates; one match does nothing; several give 412.</td></tr>
       <tr><td>Conditional update</td><td><code>PUT Patient?identifier=system|value</code>: no match creates; one match is updated; several give 412.</td></tr>
-      <tr><td>Conditional reference</td><td><code>"reference": "Patient?identifier=system|value"</code>, in transactions only: the server puts in the one match; none or several, and the transaction fails.</td></tr>
+      <tr><td>Conditional reference</td><td><code>"reference": "Patient?identifier=system|value"</code>, in transactions only: the server fills in the one match; with none or several, the transaction fails.</td></tr>
     </table>
   </section>
 
@@ -919,7 +919,7 @@
       <li><code>total</code> counts all matches, "not how many resources are returned" on this page.</li>
       <li>The paging links (<code>next</code> and friends) "are opaque to the client": "The client must use the server supplied links".</li>
       <li><code>entry.search.mode</code>: <code>match</code> for results, <code>include</code> for what <code>_include</code> or <code>_revinclude</code> pulled in, <code>outcome</code> for an OperationOutcome with warnings.</li>
-      <li>Two types carry a whole unit rather than requests: a <code>document</code> starts with a Composition, a <code>message</code> with a MessageHeader.</li>
+      <li>Two more Bundle types each carry one whole unit: a <code>document</code> starts with a Composition, a <code>message</code> with a MessageHeader.</li>
     </ul>
   </section>
 
@@ -939,7 +939,7 @@
     <ul>
       <li>Give new resources <code>urn:uuid:</code> fullUrls and reference them by that urn; never guess ids.</li>
       <li>Key every write on an identifier (conditional create, update, reference): then a retry after a timeout does no harm.</li>
-      <li>A transaction when entries depend on each other; a batch when they don't, and then check each entry.</li>
+      <li>Use a transaction when entries depend on each other, a batch when they don't (and then check each entry).</li>
       <li>Page with the server's <code>next</code> link; never build page URLs yourself.</li>
     </ul>
   </div>
@@ -973,7 +973,7 @@
     <h2><span class="n">1</span>Parameter types</h2>
     <table>
       <tr><td>string</td><td><code>Patient?family=muller</code>: "case-insensitive and accent-insensitive", equals or starts with, so it finds Müller and Müller-Huber. <code>:exact</code> matches case and accents, <code>:contains</code> anywhere.</td></tr>
-      <tr><td>token</td><td><code>code=http://loinc.org|2823-3</code>; <code>system|</code> any code in that system; a code alone matches any system.</td></tr>
+      <tr><td>token</td><td><code>code=http://loinc.org|2823-3</code>. <code>system|</code> matches any code in that system, a code alone any system.</td></tr>
       <tr><td>date</td><td><code>birthdate=1974</code> matches any day in 1974: values are ranges, set by their precision.</td></tr>
       <tr><td>number, quantity</td><td><code>value-quantity=5.4</code> means "5.4(+/-0.05) irrespective of the unit"; add <code>|http://unitsofmeasure.org|mmol/L</code> for the unit.</td></tr>
       <tr><td>reference</td><td><code>subject=Patient/123</code>; <code>patient</code> is the same, limited to Patient targets.</td></tr>
@@ -1002,7 +1002,7 @@
     <section>
       <h2><span class="n">3</span>Modifiers</h2>
       <table>
-        <tr><td><code>:missing=true</code></td><td>No value at all; with a value for the same parameter "always return[s] an empty list"</td></tr>
+        <tr><td><code>:missing=true</code></td><td>Only resources with no value; adding a value for the same parameter "always return[s] an empty list"</td></tr>
         <tr><td><code>:not</code></td><td>Also returns resources with no value</td></tr>
         <tr><td><code>:text</code></td><td>Searches <code>text</code> and <code>display</code>, not codes</td></tr>
         <tr><td><code>:below</code>, <code>:in</code></td><td>Subsumption and ValueSets, via terminology</td></tr>
@@ -1016,7 +1016,7 @@
       <ul>
         <li><strong>Chain</strong> into the target: <code>Encounter?practitioner.identifier=</code> and a GLN. Name a type if there are several: <code>subject:Patient.name=peter</code>. Two chains are independent: no one target has to match both.</li>
         <li><strong>Reverse:</strong> <code>Patient?_has:Observation:patient:code=...</code></li>
-        <li><code>_include=Encounter:service-provider</code> adds targets, <code>_revinclude=Provenance:target</code> what points in; repeat it, no commas; <code>:iterate</code> goes further. Missing targets are skipped silently.</li>
+        <li><code>_include=Encounter:service-provider</code> adds the targets, <code>_revinclude=Provenance:target</code> what points back. Repeat the parameter, never use commas; <code>:iterate</code> follows the included resources further. Missing targets are skipped silently.</li>
       </ul>
     </section>
   </div>
@@ -1088,7 +1088,7 @@
       <ul>
         <li><strong>POST</strong> a Parameters resource with the "in" parameters; the answer is a Parameters resource with the "out" ones.</li>
         <li><strong>GET</strong> works when every parameter is primitive and the operation doesn't change state; "Servers SHALL support" it then: <code>GET [base]/ValueSet/$expand?url=...&amp;filter=abdo</code>.</li>
-        <li>Exactly one resource as input: it may be the bare body. A single resource output named <code>return</code> comes back bare, without Parameters: <code>$validate</code> answers with an OperationOutcome, <code>$everything</code> with a Bundle.</li>
+        <li>When the only input is one resource, it may be the bare body. A single resource output named <code>return</code> comes back bare, without Parameters: <code>$validate</code> answers with an OperationOutcome, <code>$everything</code> with a Bundle.</li>
         <li>No parameters but a change of state: POST with an empty body ("a parameters resource cannot be empty").</li>
         <li>Success is 2xx (or 303); 4xx or 5xx carry an OperationOutcome.</li>
       </ul>
@@ -1205,8 +1205,8 @@ If-Match: W/"3"
     <h2><span class="n">6</span>PUT replaces, PATCH edits</h2>
     <div class="two">
       <ul>
-        <li>A PUT "updates the whole content of the resource": whatever you leave out is gone. The server can't tell what you dropped because you don't support it from what you meant to delete.</li>
-        <li>So a PUT is read, modify, write back with <code>If-Match</code>, and handle a 409 or 412.</li>
+        <li>A PUT "updates the whole content of the resource": whatever you leave out is gone. The server can't tell whether you left an element out on purpose or because your app doesn't know it.</li>
+        <li>So a PUT means: read, modify, write back with <code>If-Match</code>, and handle a 409 or 412.</li>
       </ul>
       <ul>
         <li>PATCH names only what changes: R4 suggests it for low bandwidth, or when a client "has only partial access or support for a resource".</li>
@@ -1280,7 +1280,7 @@ If-Match: W/"3"
       <ul>
         <li>Three levels: <code>Patient/123/_history</code>, <code>Patient/_history</code>, and <code>_history</code> for the whole server. <code>GET metadata</code> lists <code>history-instance</code>, <code>history-type</code> and <code>history-system</code> where supported.</li>
         <li>"sorted with oldest versions last, and including deleted resources". The same resource can appear several times, once per version.</li>
-        <li><code>request.method</code> tells you what happened: POST a create, PUT an update, DELETE a delete, which carries no <code>resource</code>. Only create, update and delete make entries.</li>
+        <li><code>request.method</code> tells you what happened: POST is a create, PUT an update, DELETE a delete (with no <code>resource</code>). Only create, update and delete make entries.</li>
       </ul>
       <ul>
         <li><code>_since</code> is an instant, so give it a time zone. Servers need only second precision: you may get the entry on the boundary twice.</li>
@@ -1358,9 +1358,9 @@ Content-Type: application/fhir+json
     <div class="two">
       <ul>
         <li>R5 rebuilt subscriptions around topics; the Subscriptions R5 Backport IG 1.1.0 brings a subset to R4 (package <code>hl7.fhir.uv.subscriptions-backport.r4</code>).</li>
-        <li>The topic is a canonical URL in <code>criteria</code>, filters go in an extension on <code>_criteria</code>. "FHIR R4 servers are not able to support custom topics submitted by clients": you pick from the server's, which it needn't advertise.</li>
+        <li>The topic's canonical URL goes in <code>criteria</code>, filters in an extension on <code>_criteria</code>. "FHIR R4 servers are not able to support custom topics submitted by clients": you pick one of the server's topics, and it needn't list them.</li>
         <li>Payload <code>empty</code>, <code>id-only</code> or <code>full-resource</code>; id-only "provides a good balance between security and performance".</li>
-        <li>Every notification is a <code>history</code> Bundle whose first entry is a Parameters with the subscription's status, the notification <code>type</code> (<code>handshake</code>, <code>heartbeat</code>, <code>event-notification</code>, ...) and the counter <code>events-since-subscription-start</code>, a string in R4.</li>
+        <li>Every notification is a <code>history</code> Bundle whose first entry is a Parameters resource with the subscription's status, the notification <code>type</code> (<code>handshake</code>, <code>heartbeat</code>, <code>event-notification</code>, ...) and the counter <code>events-since-subscription-start</code>, a string in R4.</li>
         <li>Setup: <code>requested</code> until the endpoint has accepted a handshake, then <code>active</code>; a failed handshake means <code>error</code>. Heartbeats come every <code>heartbeatPeriod</code> seconds.</li>
       </ul>
       <div>
@@ -1393,7 +1393,7 @@ GET https://fhir.example.org/bulkstatus/42
   "deleted": [ ... ], "error": [] }</pre>
     <div class="two">
       <ul>
-        <li>Three entry points: <code>Patient/$export</code>, <code>Group/[id]/$export</code>, <code>$export</code> for the whole server. Bulk Data Access IG 3.0.0, on R4; access usually through SMART backend services (see SMART on FHIR).</li>
+        <li>Three entry points: <code>Patient/$export</code>, <code>Group/[id]/$export</code>, <code>$export</code> for the whole server (Bulk Data Access IG 3.0.0, on R4). Access is usually through SMART backend services (see SMART on FHIR).</li>
         <li>Asynchronous: poll the <code>Content-Location</code>, honour <code>Retry-After</code>, back off. <code>DELETE</code> on that URL cancels.</li>
         <li>Output is NDJSON, one resource per line and one resource type per file. <code>requiresAccessToken: true</code>: download with your token; <code>false</code>: you must not send it.</li>
       </ul>
@@ -1419,7 +1419,7 @@ GET https://fhir.example.org/bulkstatus/42
   <div class="breaks">
     <h2><span class="n">&times;</span>When it breaks</h2>
     <ul>
-      <li><strong>Silence from an R4 subscription:</strong> read it. Status <code>error</code> or <code>off</code>, and its <code>error</code> element holds the latest failure. Fix the endpoint, PUT it back as <code>requested</code>, then catch up with <code>_history</code>.</li>
+      <li><strong>Silence from an R4 subscription:</strong> read the Subscription. If its status is <code>error</code> or <code>off</code>, its <code>error</code> element holds the latest failure. Fix the endpoint, PUT it back as <code>requested</code>, then catch up with <code>_history</code>.</li>
       <li><strong>429 on the export kick-off:</strong> a server may refuse a new export while one of yours is still running. Wait for <code>Retry-After</code>, or cancel the running job with DELETE on its status URL.</li>
       <li><strong>4xx or 5xx while polling:</strong> an OperationOutcome with a <code>transient</code> code (or one of its children) means the job itself is fine: poll again later. Any other code means the export failed: kick it off again.</li>
       <li><strong>200 from the status URL, but data missing:</strong> a partial success still answers 200. What failed is listed under <code>error</code>, as NDJSON files of OperationOutcomes: read them on every run.</li>
