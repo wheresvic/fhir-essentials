@@ -405,7 +405,7 @@
   <div class="idstrip">
     <div class="idbox good">
       <h3>Resource: one record</h3>
-      <p>A typed JSON (or XML) document with its own id and version history: Patient, Observation, Appointment. This tutorial uses R4 (4.0.1), the version CH Core builds on.</p>
+      <p>A typed JSON (or XML) document with its own id and version history: Patient, Observation, Appointment. This course uses R4 (4.0.1), the version CH Core builds on.</p>
     </div>
     <div class="idbox">
       <h3>Bundle: many records in one</h3>
@@ -420,7 +420,7 @@
         <ul>
           <li><code>resourceType</code> names the type; <code>id</code> is the server's handle for it (see Identifiers).</li>
           <li><code>meta</code> holds <code>versionId</code>, <code>lastUpdated</code> and <code>profile</code> claims (see Profiles).</li>
-          <li>Everything else is the type's own elements, mostly optional, each documented on that type's page in the spec.</li>
+          <li>The rest are the type's own elements, mostly optional, each documented on the type's page in the spec.</li>
         </ul>
       </div>
       <div>
@@ -442,7 +442,7 @@
         <tr><td>read</td><td><code>GET Patient/123</code></td></tr>
         <tr><td>vread</td><td><code>GET Patient/123/_history/3</code>: one old version</td></tr>
         <tr><td>create</td><td><code>POST Patient</code>: the server picks the id</td></tr>
-        <tr><td>update</td><td><code>PUT Patient/123</code>; a new id creates it, if allowed</td></tr>
+        <tr><td>update</td><td><code>PUT Patient/123</code>: a new id creates it, if allowed</td></tr>
         <tr><td>delete</td><td><code>DELETE Patient/123</code></td></tr>
       </table>
       <table>
@@ -461,7 +461,7 @@
         <li><code>"reference": "Patient/123"</code> is relative to the server's base; an absolute URL points elsewhere.</li>
         <li>A logical reference holds an <code>identifier</code> instead; servers may accept, resolve or reject it.</li>
         <li><strong>One-way:</strong> an Observation points at its Patient, but the Patient doesn't list its Observations. Walk back by searching: <code>Observation?subject=Patient/123</code>.</li>
-        <li>Whether a write with a missing target is refused depends on the server (HAPI can enforce it).</li>
+        <li>Some servers refuse a write whose reference points nowhere, others store it (in HAPI it's a setting).</li>
       </ul>
     </section>
 
@@ -470,7 +470,7 @@
       <ul>
         <li>Every update bumps <code>meta.versionId</code>; old versions stay readable (vread, history).</li>
         <li><strong>Lost updates:</strong> send <code>If-Match: W/"3"</code> with the PUT. If someone saved version 4 in the meantime, the server answers <code>412 Precondition Failed</code> instead of overwriting.</li>
-        <li><strong>Conditional create:</strong> <code>If-None-Exist: identifier=...</code> creates only when nothing matches; one match returns 200 and creates nothing; several return 412.</li>
+        <li><strong>Conditional create:</strong> <code>If-None-Exist: identifier=...</code> creates only when nothing matches. One match returns 200 and creates nothing; several return 412.</li>
       </ul>
     </section>
   </div>
@@ -485,7 +485,7 @@
         <tr><td><code>ETag</code></td><td><code>W/"3"</code>: send it back in <code>If-Match</code></td></tr>
       </table>
       <table>
-        <tr><td>200, 201</td><td>Updated; created</td></tr>
+        <tr><td>200, 201</td><td>OK (read, update); created</td></tr>
         <tr><td>400</td><td>Can't be parsed, or fails basic FHIR rules</td></tr>
         <tr><td>404</td><td>Not found, or not a FHIR endpoint</td></tr>
         <tr><td>405</td><td>PUT to a new id; the server assigns ids itself</td></tr>
@@ -554,8 +554,8 @@
       </div>
       <ul>
         <li><strong>No value, no property:</strong> "properties never have null values": no <code>null</code>, <code>""</code>, <code>{}</code> or <code>[]</code>.</li>
-        <li>Arrays even for one item, in order; property order is free.</li>
-        <li><strong>Choice elements:</strong> <code>[x]</code> becomes the type (<code>valueQuantity</code>, <code>effectivePeriod</code>), one per instance. Observation allows eleven <code>value[x]</code> types: read only <code>valueQuantity</code> and you miss the rest.</li>
+        <li>A repeating element is always an array, even with one item. Array order counts; property order doesn't.</li>
+        <li><strong>Choice elements:</strong> <code>[x]</code> becomes the type (<code>valueQuantity</code>, <code>effectivePeriod</code>), and an instance holds only one of them. Observation allows eleven <code>value[x]</code> types: read only <code>valueQuantity</code> and you miss the rest.</li>
       </ul>
     </div>
   </section>
@@ -565,7 +565,7 @@
     <div class="two wide-left">
       <ul>
         <li>R4: "0.010 is regarded as different to 0.01". Float parsers drop the zeros (in JavaScript "2.00 will be converted to 2"): parse into a decimal type.</li>
-        <li><strong>Quantity:</strong> <code>unit</code> for people, <code>system</code> plus <code>code</code> for software, UCUM where the unit exists there.</li>
+        <li><strong>Quantity:</strong> <code>unit</code> for people, <code>system</code> plus <code>code</code> for software, from UCUM where it has the unit.</li>
         <li><code>comparator</code> is a modifier: <code>"&lt;"</code> makes 0.5 "less than 0.5". Code that reads only <code>value</code> gets it wrong.</li>
       </ul>
       <div>
@@ -594,7 +594,7 @@
       <ul>
         <li><code>Date.parse("1995-01-27")</code> reads a date-only string as UTC, <code>"1995-01-27T00:00:00"</code> as local time: a birthDate turned into a timestamp can end up a day off.</li>
         <li><code>"1974"</code> is a valid birthDate; padding it to <code>1974-01-01</code> invents precision.</li>
-        <li>Swiss offsets: <code>+01:00</code> in winter, <code>+02:00</code> in summer. Read it, never assume it.</li>
+        <li>Swiss offsets: <code>+01:00</code> in winter, <code>+02:00</code> in summer. Read the offset, never assume it.</li>
       </ul>
     </div>
   </section>
@@ -604,7 +604,7 @@
     <div class="two">
       <ul>
         <li>Inline in <code>contained</code>, referenced as <code>"#med1"</code>. It "does not have an independent existence": no URL, search or update of its own.</li>
-        <li>Never nested; no <code>meta.versionId</code> or <code>lastUpdated</code>; it must reference its container or be referenced from it.</li>
+        <li>It can't contain others and has no <code>meta.versionId</code> or <code>lastUpdated</code>. It must reference its container or be referenced from it.</li>
         <li>R4: "This SHOULD NOT be done when the content can be identified properly".</li>
       </ul>
       <div>
@@ -657,11 +657,11 @@
   <div class="idstrip">
     <div class="idbox">
       <h3><code>id</code>: the server's handle</h3>
-      <p>The <code>123</code> in <code>Practitioner/123</code>. Means something on that server only: a reload, a migration or another environment (dev, stg, prod) can give the same person another one.</p>
+      <p>The <code>123</code> in <code>Practitioner/123</code>. It only means something on that server: a reload, a migration or another environment (dev, stg, prod) can give the same person a different one.</p>
     </div>
     <div class="idbox good">
       <h3><code>identifier</code>: the business key</h3>
-      <p>A <code>system</code> (a URI naming the namespace) plus a <code>value</code>. Survives copies, reloads and environments, and you find the resource by it.</p>
+      <p>A <code>system</code> (a URI naming the namespace) plus a <code>value</code>. It survives copies, reloads and environments, and you search by it.</p>
     </div>
   </div>
 
@@ -669,13 +669,13 @@
     <h2><span class="n">1</span>One thing, many numbers</h2>
     <p>The same person is known to several systems, each with its own number. FHIR doesn't pick a winner: it lists them all, and each one names its system, so every consumer picks the one it knows.</p>
     <div class="who">
-      <div><strong>A USB patient</strong>SAP patient number, AHV number (AHVN13), EPD patient ID (EPR-SPID), insurance card number, an openEHR EHR ID</div>
+      <div><strong>A hospital patient</strong>SAP patient number, AHV number (AHVN13), EPD patient ID (EPR-SPID), insurance card number, an openEHR EHR ID</div>
       <div><strong>A physician</strong>GLN, ZSR number (billing), SAP personnel number, Entra ID account</div>
     </div>
     <div class="two wide-left">
       <div>
         <table>
-          <tr><td><code>system</code> + <code>value</code></td><td>Where the number comes from, and the number. These two are what matters.</td></tr>
+          <tr><td><code>system</code> + <code>value</code></td><td>Where the number comes from, and the number itself. These two are what count.</td></tr>
           <tr><td><code>use</code></td><td>usual, official, temp, secondary, old (for example after a merge)</td></tr>
           <tr><td><code>type</code></td><td>What kind of number it is</td></tr>
           <tr><td><code>period</code>, <code>assigner</code></td><td>When it was valid, who issued it</td></tr>
@@ -686,7 +686,7 @@
   { "system": "urn:oid:2.51.1.3",
     "value": "7601000000019" },
   { "system":
-      "https://example.usb.ch/sid/staff-nr",
+      "https://example.org/sid/staff-nr",
     "value": "123456" }
 ]</pre>
         <p class="note">Illustrative: the second system URI and both values are made up.</p>
@@ -759,7 +759,7 @@
     </div>
     <div class="idbox good">
       <h3>ValueSet: the allowed list</h3>
-      <p>Picks the codes allowed for one use, from one or more CodeSystems, by listing them or by a rule (say, every descendant of a SNOMED concept). Profiles bind elements to ValueSets, never to CodeSystems.</p>
+      <p>Picks the codes allowed for one use, from one or more CodeSystems, by listing them or by a rule (say, every descendant of a SNOMED CT concept). Profiles bind elements to ValueSets, never to CodeSystems.</p>
     </div>
   </div>
 
@@ -805,7 +805,7 @@
         <tr><td><code>$lookup</code></td><td>Details of one code: display, properties, other names</td></tr>
         <tr><td><code>$validate-code</code></td><td>Is this code in this ValueSet? true or false</td></tr>
         <tr><td><code>$expand</code></td><td>The current codes of a ValueSet, optionally filtered by text</td></tr>
-        <tr><td><code>$subsumes</code></td><td>Is one code a kind of another? 73211009 Diabetes mellitus subsumes 44054006</td></tr>
+        <tr><td><code>$subsumes</code></td><td>Is one code a kind of another? 73211009 Diabetes mellitus subsumes 44054006 Type 2 diabetes mellitus</td></tr>
         <tr><td><code>$translate</code></td><td>Map a code to another system, using a ConceptMap</td></tr>
       </table>
     </section>
@@ -814,7 +814,7 @@
   <section>
     <h2><span class="n">4</span>The Swiss side</h2>
     <ul>
-      <li><strong>SNOMED CT:</strong> Switzerland has been a member of SNOMED International since January 2016. The FOPH gave the National Release Centre to eHealth Suisse, which issues the licences (through SNOMED International's MLDS portal); use in Switzerland is free. eHealth Suisse translates into German and French with other release centres, into Italian on its own, and a Switzerland extension comes out twice a year.</li>
+      <li><strong>SNOMED CT:</strong> Switzerland has been a member of SNOMED International since January 2016. The BAG made eHealth Suisse the National Release Centre: it issues the licences (through SNOMED International's MLDS portal), and use in Switzerland is free. eHealth Suisse translates into German and French with other release centres and into Italian on its own; a Switzerland extension comes out twice a year.</li>
       <li><strong>CH Term</strong> (<code>ch.fhir.ig.ch-term#3.4.0</code>): "terminology that is used in Switzerland for the core profiles": EPD metadata from the annexes of the EPD ordinance, BFS statistics, eCH, vaccination, plus imported systems such as SNOMED CT, EDQM and UCUM.</li>
     </ul>
   </section>
