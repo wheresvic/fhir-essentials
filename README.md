@@ -7,7 +7,7 @@ A course for developers on the HL7® FHIR® standard: R4 with Swiss examples, th
 ## How it works
 
 - The whole course is `index.html`: plain HTML and CSS, no build step, no JavaScript.
-- To print, open the page in Chrome or Edge, choose A4 and turn off the browser's headers and footers; the page brings its own.
+- To print, open the page in Chrome or Edge, choose A4 and turn off the browser's headers and footers; the page brings its own footer with page numbers. Firefox and Safari don't support CSS page footers, so there the page numbers come only from the browser's own headers and footers.
 - A push to `main` republishes the page through GitHub Pages.
 
 ## License and notices
