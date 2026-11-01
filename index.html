@@ -2203,6 +2203,26 @@ dependencies:
     </div>
   </section>
 
+  <section>
+    <h2><span class="n">8</span>Two version numbers</h2>
+    <div class="two wide-left">
+<pre>{ "name": "ch.fhir.ig.ch-core",
+  "version": "6.0.0",
+  "title": "CH Core (R4)",
+  "fhirVersions": [ "4.0.1" ],
+  "dependencies": {
+    "hl7.fhir.r4.core": "4.0.1",
+    "ch.fhir.ig.ch-term": "3.3.x", ... } }</pre>
+      <ul>
+        <li><code>version</code> is CH Core's own release; <code>fhirVersions</code> is the FHIR release it builds on, 4.0.1 (R4). The "(R4)" in the title names that base.</li>
+        <li>Every profile carries both: CH Core Patient has <code>version</code> 6.0.0 and <code>fhirVersion</code> 4.0.1. Its URL holds neither, so it stays the same from release to release.</li>
+        <li>A resource can pin CH Core's version in <code>meta.profile</code>: <code>...ch-core-patient|6.0.0</code>. It never states the FHIR version; the server's CapabilityStatement does (see FHIR versions).</li>
+        <li>7.0.0-ballot is still R4. And the 6 has nothing to do with FHIR R6, whose ballots are numbered <code>6.0.0-ballot5</code>.</li>
+      </ul>
+    </div>
+    <p class="note">CH Core 6.0.0's package.json, shortened.</p>
+  </section>
+
   <div class="breaks">
     <h2><span class="n">&times;</span>When it breaks</h2>
     <ul>
@@ -2224,7 +2244,7 @@ dependencies:
   </div>
 
   <footer>
-    2026-11-01. Sources: CH Core 6.0.0 (<a href="https://fhir.ch/ig/ch-core/6.0.0/">fhir.ch</a>) and 7.0.0-ballot (<a href="https://fhir.ch/ig/ch-core/7.0.0-ballot/">fhir.ch</a>): home page, profiles and extensions lists, usage of Swiss core artifacts, changelog, Patient, Patient EPR, Organization, PractitionerRole, Address, HumanName and identifier profiles, example patients; their packages, read as JSON; CH Core version history (<a href="https://fhir.ch/ig/ch-core/history.html">fhir.ch</a>), FHIR package registry (<a href="https://packages.fhir.org/ch.fhir.ig.ch-core">packages.fhir.org</a>), CH Core CI build changelog (<a href="https://build.fhir.org/ig/hl7ch/ch-core/en/changelog.html">build.fhir.org</a>), package.json of each Swiss IG listed (<a href="https://packages.fhir.org/">packages.fhir.org</a>), HL7 Switzerland FHIR working group (<a href="https://www.hl7.ch/en/working-group-fhir">hl7.ch</a>), R4 ElementDefinition: ordered slicing (<a href="https://hl7.org/fhir/R4/elementdefinition-definitions.html#ElementDefinition.slicing.ordered">hl7.org</a>), R4 canonical references (<a href="https://hl7.org/fhir/R4/references.html#canonical">hl7.org</a>).
+    2026-11-01. Sources: CH Core 6.0.0 (<a href="https://fhir.ch/ig/ch-core/6.0.0/">fhir.ch</a>) and 7.0.0-ballot (<a href="https://fhir.ch/ig/ch-core/7.0.0-ballot/">fhir.ch</a>): home page, profiles and extensions lists, usage of Swiss core artifacts, changelog, Patient, Patient EPR, Organization, PractitionerRole, Address, HumanName and identifier profiles, example patients; their packages, read as JSON; CH Core version history (<a href="https://fhir.ch/ig/ch-core/history.html">fhir.ch</a>), FHIR package registry (<a href="https://packages.fhir.org/ch.fhir.ig.ch-core">packages.fhir.org</a>), CH Core CI build changelog (<a href="https://build.fhir.org/ig/hl7ch/ch-core/en/changelog.html">build.fhir.org</a>), package.json of each Swiss IG listed (<a href="https://packages.fhir.org/">packages.fhir.org</a>), HL7 Switzerland FHIR working group (<a href="https://www.hl7.ch/en/working-group-fhir">hl7.ch</a>), R4 ElementDefinition: ordered slicing (<a href="https://hl7.org/fhir/R4/elementdefinition-definitions.html#ElementDefinition.slicing.ordered">hl7.org</a>), R4 canonical references (<a href="https://hl7.org/fhir/R4/references.html#canonical">hl7.org</a>), FHIR publication directory (<a href="https://hl7.org/fhir/directory.html">hl7.org</a>).
   </footer>
 
 </article>
