@@ -1482,7 +1482,7 @@ GET https://fhir.example.org/bulkstatus/42
   "identifier": [
     { "system": "urn:oid:2.51.1.3",
       "value": "7601000000019" },
-    { "system": "http://example.org/sid/staff-nr",
+    { "system": "https://example.org/sid/staff-nr",
       "value": "4711" } ],
   "name": [
     { "family": "Muster",
@@ -1528,9 +1528,9 @@ GET https://fhir.example.org/bulkstatus/42
       <ul>
         <li>An invariant holds only if it evaluates to true. <code>{ }</code> isn't true, and validators may report it differently: write rules that always give a boolean.</li>
         <li>So test presence with <code>exists()</code> and <code>empty()</code>, as obs-6 does: <code>dataAbsentReason.empty() or value.empty()</code>.</li>
-        <li><code>where()</code> drops items whose criteria is false or <code>{ }</code>: a name without <code>use</code> matches neither <code>use = 'official'</code> nor <code>use != 'official'</code>.</li>
+        <li><code>where()</code> drops items for which the condition is false or <code>{ }</code>: a name without <code>use</code> matches neither <code>use = 'official'</code> nor <code>use != 'official'</code>.</li>
         <li>Where a boolean is expected, a single item that isn't a boolean counts as true; two or more items are an error.</li>
-        <li>No promised short-circuit: guard with <code>iif(cond, then, else)</code>, which evaluates only the branch it needs.</li>
+        <li>Short-circuiting isn't promised: guard with <code>iif(cond, then, else)</code>, which evaluates only the branch it needs.</li>
       </ul>
     </div>
   </section>
@@ -1695,9 +1695,9 @@ fhirpath.evaluate(practitioner,
       </table>
       <table>
         <tr><td>Invariants</td><td>FHIRPath rules, error or warning</td></tr>
-        <tr><td>Slicing</td><td>Rules per kind of list entry (2)</td></tr>
+        <tr><td>Slicing</td><td>Rules per kind of list entry</td></tr>
         <tr><td>Extensions</td><td>Which are allowed, where, how many</td></tr>
-        <tr><td>mustSupport</td><td>Elements to "support" (3)</td></tr>
+        <tr><td>mustSupport</td><td>Elements to "support"</td></tr>
       </table>
     </div>
     <p>What it can't do: add elements (only extensions add data), widen what the base or a parent profile allows, or give an element a default value or a new meaning.</p>
@@ -1806,7 +1806,7 @@ fhirpath.evaluate(practitioner,
     <h2><span class="n">1</span>Anatomy</h2>
     <ul>
       <li>An <code>extension</code> array can sit on any element. Each entry has a <code>url</code> and exactly one <code>value[x]</code> (<code>valueCoding</code>, <code>valueReference</code>, <code>valueAddress</code>, ...), or nested extensions for a complex one, never both.</li>
-      <li>The <code>url</code> is not a page for people: it is the canonical URL of the StructureDefinition that defines the extension, which says where it may sit (its context), its value type, its cardinality and any ValueSet binding.</li>
+      <li>The <code>url</code> is not a page for people: it is the canonical URL of the extension's StructureDefinition. That says where the extension may sit (its context), its value type, its cardinality and any ValueSet binding.</li>
       <li>Primitives can carry extensions too. In JSON they go in a sibling property with an underscore: <code>"_birthDate": { "extension": [ ... ] }</code>.</li>
     </ul>
 <pre>"extension": [
@@ -1904,7 +1904,7 @@ fhirpath.evaluate(practitioner,
       <ul>
         <li>"all these validation methods are incomplete; they can only validate the computable aspects of conformance". Business rules are yours.</li>
         <li>R4: use during development "is highly recommended", in production it "might not always be a good idea": full validation with terminology "can be quite computationally demanding".</li>
-        <li>Be "conservative in its sending behavior, and liberal in its receiving behavior": validate what you send, think twice before rejecting what you receive.</li>
+        <li>R4 asks an application to be "conservative in its sending behavior, and liberal in its receiving behavior": validate what you send, think twice before rejecting what you receive.</li>
       </ul>
     </div>
   </section>
@@ -2045,7 +2045,7 @@ dependencies:
       <tr><td>Canonical references</td><td><code>...ch-core-practitioner|6.0.0</code>. Without <code>|version</code> a system "should pick the latest version" it has.</td></tr>
       <tr><td>Validator</td><td><code>-ig ch.fhir.ig.ch-core#6.0.0</code>, never a bare package id or <code>#current</code> in CI.</td></tr>
       <tr><td>SUSHI</td><td><code>ch.fhir.ig.ch-core: 6.0.0</code>. <code>latest</code>, <code>current</code> and <code>dev</code> move; <code>sushi update-dependencies</code> rewrites the config to the newest versions.</td></tr>
-      <tr><td>Package rules</td><td>Whole version numbers, "except for the patch version": CH Core 6.0.0 itself depends on <code>ch.fhir.ig.ch-term</code> <code>3.3.x</code>.</td></tr>
+      <tr><td>Package rules</td><td>Dependencies name whole versions, "except for the patch version": CH Core 6.0.0 itself depends on <code>ch.fhir.ig.ch-term</code> <code>3.3.x</code>.</td></tr>
     </table>
     <p class="note">CH Core 6.0.0 (2025-12-16) is the current release; fhir.ch/ig/ch-core/ shows the 7.0.0 ballot (see CH Core).</p>
   </section>
@@ -2081,7 +2081,7 @@ dependencies:
   <header>
     <div class="kicker">FHIR essentials &middot; Lesson 13</div>
     <h1>CH Core: the Swiss base profiles</h1>
-    <p class="lede">HL7 Switzerland's profiles for Swiss data: eCH addresses and names, Swiss identifiers, BFS statistics, the EPD variants. Almost everything is optional on purpose, so your own profile does the tightening.</p>
+    <p class="lede">HL7 Switzerland's profiles for Swiss data: eCH addresses and names, Swiss identifiers, BFS statistics, the EPD variants (named EPR). Almost everything is optional on purpose, so your own profile does the tightening.</p>
   </header>
 
   <div class="idstrip">
