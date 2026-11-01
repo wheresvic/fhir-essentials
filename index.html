@@ -27,14 +27,22 @@
     --warm-soft: #fbf3e6;
     --alert: #a3352a;
     --alert-soft: #fcf0ee;
+    --alert-line: #efcdc8;
+    --warm-line: #ecd3ac;
+    --good-line: #0d6680;
+    --warn-line: #9a5b13;
+    --on-accent: #ffffff;
     --rule: #d6dce4;
     --code-bg: #f3f5f8;
+    --paper: #ffffff;
+    --side: #f6f8fa;
     --mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
     --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   }
 
-  /* Font sizes are in rem: 1rem is 9.8pt on paper and 15px on screen, so the screen
-     shows the printed sheet scaled up and follows the reader's browser font size. */
+  /* Font sizes are in rem: 1rem is 9.8pt on paper and 15px on screen (following the
+     reader's browser font size). The rules up to "Screen" are the printed A4 layout;
+     the screen design at the end only adjusts it. */
   * { box-sizing: border-box; }
   html { font-size: 9.8pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body {
@@ -45,18 +53,6 @@
   }
   .page { max-width: 194mm; margin: 0 auto; }
 
-  @media screen {
-    html { font-size: 93.75%; }
-    body { background: #e9edf2; padding: 24px 16px; }
-    /* 57.5rem of text, a little more than the printed 56.1rem so print-width code fits, plus the card's padding */
-    .page { max-width: 65rem; }
-    .lesson { background: #ffffff; padding: 3rem 3.75rem; box-shadow: 0 2px 14px rgba(20, 30, 50, 0.12); border-radius: 4px; scroll-margin-top: 16px; }
-    .lesson + .lesson { margin-top: 24px; }
-    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
-    .route .title a:hover { text-decoration: underline; }
-    footer a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 2px; }
-    footer a:hover { text-decoration-color: currentColor; }
-  }
   @media print {
     .lesson + .lesson { break-before: page; }
     section, .callout, .breaks, .idstrip, pre, table, footer { break-inside: avoid; }
@@ -77,7 +73,7 @@
   h2 .n {
     display: inline-flex; align-items: center; justify-content: center;
     width: 1.3rem; height: 1.3rem; margin-right: 0.54rem; border-radius: 50%;
-    background: var(--accent); color: #fff; font-size: 0.867rem; text-indent: 0;
+    background: var(--accent); color: var(--on-accent); font-size: 0.867rem; text-indent: 0;
     position: relative; top: -1px;
   }
   section { margin-bottom: 10px; }
@@ -101,16 +97,16 @@
   .idbox h3 { margin: 0 0 2px; font-size: 1rem; }
   .idbox h3 code { background: none; padding: 0; font-size: 1.02rem; }
   .idbox p { margin: 0; }
-  .idbox.good { border-color: var(--accent); background: var(--accent-soft); }
-  .idbox.warn { border-color: var(--warm); background: var(--warm-soft); }
+  .idbox.good { border-color: var(--good-line); background: var(--accent-soft); }
+  .idbox.warn { border-color: var(--warn-line); background: var(--warm-soft); }
   ol { margin: 0 0 5px; padding-left: 17px; }
   ol li { margin: 2px 0; }
 
   .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
   .two.wide-left { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); }
   .who { border-left: 3px solid var(--rule); padding: 1px 0 1px 8px; margin: 2px 0 5px; }
-  .who div { margin: 1px 0; }
-  .who strong { display: inline-block; width: 7.04rem; font-size: 0.796rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .who div { display: grid; grid-template-columns: 7.04rem minmax(0, 1fr); align-items: baseline; margin: 1px 0; }
+  .who strong { font-size: 0.796rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
 
   table { border-collapse: collapse; width: 100%; font-size: 0.949rem; margin: 3px 0 4px; }
   td { padding: 3px 6px 3px 0; vertical-align: top; border-top: 1px solid var(--rule); }
@@ -119,7 +115,7 @@
   td:first-child code { font-weight: 600; }
 
   .callout {
-    background: var(--warm-soft); border: 1px solid #ecd3ac; border-left: 4px solid var(--warm);
+    background: var(--warm-soft); border: 1px solid var(--warm-line); border-left: 4px solid var(--warm);
     border-radius: 4px; padding: 7px 10px; margin-top: 2px;
   }
   .callout h2 { color: var(--warm); }
@@ -127,7 +123,7 @@
   .callout ul { margin-bottom: 0; }
 
   .breaks {
-    background: var(--alert-soft); border: 1px solid #efcdc8; border-left: 4px solid var(--alert);
+    background: var(--alert-soft); border: 1px solid var(--alert-line); border-left: 4px solid var(--alert);
     border-radius: 4px; padding: 7px 10px; margin: 0 0 10px;
   }
   .breaks h2 { color: var(--alert); }
@@ -142,7 +138,7 @@
   .route .num {
     display: inline-flex; align-items: center; justify-content: center;
     width: 1.454rem; height: 1.454rem; border-radius: 50%;
-    background: var(--accent); color: #fff; font-weight: 700; font-size: 0.867rem;
+    background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 0.867rem;
   }
   .route .title { font-family: var(--serif); font-weight: 600; font-size: 1.071rem; line-height: 1.2; }
   .route .title a { color: var(--ink); text-decoration: none; }
@@ -157,10 +153,134 @@
   .route li.planned .num { background: var(--rule); color: var(--muted); }
   .route li.planned .title { color: var(--muted); }
 
+  /* ---------- Screen: a documentation page with a lesson list on the left ---------- */
+  .toc, .dock { display: none; }
+
+  @media screen {
+    html { font-size: 93.75%; scroll-behavior: smooth; }
+    body { background: var(--paper); line-height: 1.6; padding: 0 32px; }
+    ::selection { background: var(--accent-soft); }
+    /* 60rem: wider than the printed 56.1rem, so print-width code fits with the larger padding and gaps */
+    .page { max-width: 60rem; padding: 56px 0 120px; }
+    .lesson { scroll-margin-top: 32px; }
+    .lesson + .lesson { margin-top: 88px; padding-top: 72px; border-top: 1px solid var(--rule); }
+
+    header { border-bottom: none; padding-bottom: 0; margin-bottom: 40px; }
+    header::after { content: ""; display: block; width: 56px; height: 3px; margin-top: 22px; border-radius: 2px; background: var(--accent); }
+    .kicker { letter-spacing: 0.12em; }
+    h1 { font-size: 2.6rem; line-height: 1.1; margin: 8px 0 12px; letter-spacing: -0.012em; }
+    .lede { font-size: 1.15rem; line-height: 1.55; max-width: 44rem; }
+
+    h2 { font-size: 1.3rem; line-height: 1.35; margin-bottom: 12px; padding-left: 2.1rem; text-indent: -2.1rem; }
+    h2 .n { width: 1.5rem; height: 1.5rem; margin-right: 0.6rem; font-size: 0.85rem; top: -2px; }
+    section { margin-bottom: 44px; }
+    p, ul, ol { margin-bottom: 12px; }
+    li { margin: 5px 0; }
+    /* Prose across the full width stays at a readable line length */
+    section > p, section > ul, section > ol { max-width: 44rem; }
+    .two { gap: 28px; }
+
+    .idstrip { gap: 16px; margin-bottom: 44px; }
+    .idbox { border-radius: 10px; padding: 14px 18px; }
+    .idbox h3 { font-size: 1.05rem; margin-bottom: 4px; }
+
+    code { border-radius: 4px; }
+    pre { line-height: 1.6; border-radius: 8px; padding: 12px 14px; margin: 10px 0 14px; }
+    .note { margin: 0 0 12px; line-height: 1.5; }
+    table { margin: 10px 0 14px; }
+    td { padding: 8px 12px 8px 0; }
+    td:first-child { padding-right: 16px; }
+
+    .breaks, .callout { border-radius: 10px; padding: 18px 22px 14px; }
+    .breaks { margin-bottom: 20px; }
+    .breaks li, .callout li { margin: 6px 0; }
+
+    footer { margin-top: 32px; padding-top: 14px; font-size: 0.8rem; line-height: 1.55; }
+    footer a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 2px; }
+    footer a:hover { text-decoration-color: currentColor; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+    /* Colour scheme switch and the way back to the lesson list, fixed bottom right */
+    .dock { display: flex; gap: 8px; align-items: center; position: fixed; right: 16px; bottom: 16px; z-index: 10; }
+    .theme { display: flex; padding: 3px; border-radius: 999px; background: var(--paper); border: 1px solid var(--rule); box-shadow: 0 2px 10px rgba(15, 25, 40, 0.12); }
+    .theme input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .theme label { padding: 3px 11px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; color: var(--muted); cursor: pointer; }
+    .theme label:hover { color: var(--ink); }
+    .theme input:checked + label { background: var(--accent); color: var(--on-accent); }
+    .theme input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .totop {
+      padding: 7px 14px; border-radius: 999px; background: var(--accent); color: var(--on-accent);
+      font-size: 0.85rem; font-weight: 700; text-decoration: none; box-shadow: 0 2px 10px rgba(15, 25, 40, 0.2);
+    }
+
+    .route { margin-top: 8px; }
+    .route li { padding: 10px 0; gap: 2px 14px; }
+    .route .num { width: 1.6rem; height: 1.6rem; }
+    .route .title { font-size: 1.12rem; }
+    .route .title a:hover { color: var(--accent); }
+    .route .what { font-size: 0.95rem; line-height: 1.5; }
+    .route .stage { padding-top: 26px; }
+    .legend { margin-top: 14px; }
+    .notices { margin-top: 32px; padding-top: 14px; font-size: 0.78rem; line-height: 1.55; }
+    .notices p { margin-bottom: 6px; }
+  }
+
+  @media screen and (min-width: 900px) {
+    /* "When it breaks" in two columns, so its lines stay short */
+    .breaks ul { columns: 2; column-gap: 44px; }
+    .breaks li { break-inside: avoid; }
+  }
+
+  @media screen and (min-width: 1280px) {
+    body { padding-left: 312px; }
+    .toc {
+      display: block; position: fixed; top: 0; bottom: 0; left: 0; width: 272px; overflow-y: auto;
+      padding: 40px 20px 80px 28px; background: var(--side); border-right: 1px solid var(--rule);
+      font-size: 0.88rem; line-height: 1.35;
+    }
+    .toc .brand { display: block; margin-bottom: 8px; font-family: var(--serif); font-weight: 600; font-size: 1.35rem; color: var(--ink); text-decoration: none; }
+    .toc .part { margin: 20px 0 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+    .toc ol { list-style: none; margin: 0; padding: 0; }
+    .toc li { margin: 0; }
+    .toc a { display: flex; gap: 10px; padding: 4px 8px; margin-left: -8px; border-radius: 6px; color: var(--ink); text-decoration: none; }
+    .toc a:hover { background: var(--accent-soft); color: var(--accent); }
+    .toc .i { flex: none; width: 1.3rem; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+    /* The sidebar holds the switch at its foot and needs no way back */
+    .dock { right: auto; left: 28px; bottom: 24px; }
+    .totop { display: none; }
+  }
+
+  /* Dark colours, screen only: from the system setting unless the reader picks Light, or when the reader picks Dark */
+  @media screen and (prefers-color-scheme: dark) {
+    :root:not(:has(#theme-light:checked)) {
+      color-scheme: dark;
+      --ink: #d3d9e0; --muted: #8f9aa7; --accent: #6db5cb; --accent-soft: #1b2f37; --good-line: #2f5d6b; --on-accent: #12171d;
+      --warm: #d6a463; --warm-soft: #27221b; --warm-line: #4a3d2a; --warn-line: #6a5130;
+      --alert: #e48a80; --alert-soft: #2b1f20; --alert-line: #52302d;
+      --rule: #2c343e; --code-bg: #232a34; --paper: #181d23; --side: #14181d;
+    }
+  }
+  @media screen {
+    :root:has(#theme-dark:checked) {
+      color-scheme: dark;
+      --ink: #d3d9e0; --muted: #8f9aa7; --accent: #6db5cb; --accent-soft: #1b2f37; --good-line: #2f5d6b; --on-accent: #12171d;
+      --warm: #d6a463; --warm-soft: #27221b; --warm-line: #4a3d2a; --warn-line: #6a5130;
+      --alert: #e48a80; --alert-soft: #2b1f20; --alert-line: #52302d;
+      --rule: #2c343e; --code-bg: #232a34; --paper: #181d23; --side: #14181d;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    body { padding: 0 18px; }
+    .page { padding-top: 32px; }
+    .lesson + .lesson { margin-top: 56px; padding-top: 48px; }
+    h1 { font-size: 2.05rem; }
+    section { margin-bottom: 34px; }
+  }
+
   @media (max-width: 640px) {
     .idstrip, .two, .two.wide-left { grid-template-columns: 1fr; }
-    .who strong { display: block; width: auto; }
-    .lesson { padding: 16px; }
+    .who div { grid-template-columns: minmax(0, 1fr); }
     /* Itinerary: number, title and date on the first row, the description below */
     .route li { grid-template-columns: 1.837rem minmax(0, 1fr) auto; }
     .route .title { grid-column: 2; grid-row: 1; }
@@ -172,6 +292,48 @@
 </style>
 </head>
 <body>
+<nav class="toc" aria-label="Lessons">
+  <a class="brand" href="#itinerary">FHIR&reg; essentials</a>
+  <p class="part">I &middot; Foundations</p>
+  <ol>
+    <li><a href="#basics"><span class="i">1</span>FHIR basics</a></li>
+    <li><a href="#datatypes"><span class="i">2</span>Data types</a></li>
+    <li><a href="#identifiers"><span class="i">3</span>Identifiers</a></li>
+    <li><a href="#terminology"><span class="i">4</span>Terminology</a></li>
+  </ol>
+  <p class="part">II &middot; Working with a server</p>
+  <ol>
+    <li><a href="#bundles"><span class="i">5</span>Bundles</a></li>
+    <li><a href="#search"><span class="i">6</span>Search</a></li>
+    <li><a href="#operations"><span class="i">7</span>Operations and PATCH</a></li>
+    <li><a href="#changefeeds"><span class="i">8</span>Change feeds</a></li>
+  </ol>
+  <p class="part">III &middot; Conformance</p>
+  <ol>
+    <li><a href="#fhirpath"><span class="i">9</span>FHIRPath</a></li>
+    <li><a href="#profiles"><span class="i">10</span>Profiles</a></li>
+    <li><a href="#extensions"><span class="i">11</span>Extensions</a></li>
+    <li><a href="#validation"><span class="i">12</span>Validation and tooling</a></li>
+    <li><a href="#chcore"><span class="i">13</span>CH Core</a></li>
+  </ol>
+  <p class="part">IV &middot; Modelling with resources</p>
+  <ol>
+    <li><a href="#people"><span class="i">14</span>People and organisations</a></li>
+    <li><a href="#clinical"><span class="i">15</span>Clinical data</a></li>
+    <li><a href="#medications"><span class="i">16</span>Medications</a></li>
+    <li><a href="#orders"><span class="i">17</span>Orders and tasks</a></li>
+    <li><a href="#scheduling"><span class="i">18</span>Scheduling</a></li>
+    <li><a href="#documents"><span class="i">19</span>Documents</a></li>
+  </ol>
+  <p class="part">V &middot; Switzerland and production</p>
+  <ol>
+    <li><a href="#smart"><span class="i">20</span>SMART on FHIR</a></li>
+    <li><a href="#audit"><span class="i">21</span>Audit, provenance, consent</a></li>
+    <li><a href="#epd"><span class="i">22</span>The EPD</a></li>
+    <li><a href="#versions"><span class="i">23</span>FHIR versions</a></li>
+    <li><a href="#breaks"><span class="i">24</span>When things break</a></li>
+  </ol>
+</nav>
 <div class="page">
 <article class="lesson" id="itinerary">
 
@@ -4221,6 +4383,14 @@ Content-Type: application/fhir+json
   </footer>
 
 </article>
+</div>
+<div class="dock">
+  <div class="theme" role="radiogroup" aria-label="Colour scheme">
+    <input type="radio" name="theme" id="theme-auto" checked><label for="theme-auto">Auto</label>
+    <input type="radio" name="theme" id="theme-light"><label for="theme-light">Light</label>
+    <input type="radio" name="theme" id="theme-dark"><label for="theme-dark">Dark</label>
+  </div>
+  <a class="totop" href="#itinerary" aria-label="Back to the list of lessons">&uarr; Lessons</a>
 </div>
 </body>
 </html>
